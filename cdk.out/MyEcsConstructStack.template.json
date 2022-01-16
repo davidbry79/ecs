@@ -1,0 +1,258 @@
+{
+  "Resources": {
+    "networkcluster3AF58702": {
+      "Type": "AWS::ECS::Cluster",
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/network-cluster/Resource"
+      }
+    },
+    "ecstaskdefTaskRole84101996": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs-task-def/TaskRole/Resource"
+      }
+    },
+    "ecstaskdefDBF1FC28": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "amazon/amazon-ecs-sample",
+            "Name": "WebContainer",
+            "PortMappings": [
+              {
+                "ContainerPort": 80,
+                "Protocol": "tcp"
+              }
+            ]
+          }
+        ],
+        "Cpu": "256",
+        "Family": "MyEcsConstructStackecstaskdef8886346C",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "ecstaskdefTaskRole84101996",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs-task-def/Resource"
+      }
+    },
+    "secgroupecsalb44D0D5CE": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Port and traffic restriction on public facing ecs albs",
+        "GroupName": "secgroup_ecs_alb",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "255.255.255.255/32",
+            "Description": "Disallow all traffic",
+            "FromPort": 252,
+            "IpProtocol": "icmp",
+            "ToPort": 86
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "http from internet",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80
+          }
+        ],
+        "VpcId": "vpc-090b955b8018b1f7e"
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/secgroup_ecs_alb/Resource"
+      }
+    },
+    "ecsserviceServiceF21F8639": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "networkcluster3AF58702"
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "ecsserviceSecurityGroup926DCE35",
+                  "GroupId"
+                ]
+              }
+            ],
+            "Subnets": [
+              "subnet-020b95102938fa37f",
+              "subnet-08679efb0bb11d9b1",
+              "subnet-082493faa477733c9"
+            ]
+          }
+        },
+        "TaskDefinition": {
+          "Ref": "ecstaskdefDBF1FC28"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs_service/Service"
+      }
+    },
+    "ecsserviceSecurityGroup926DCE35": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "MyEcsConstructStack/ecs_service/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": "vpc-090b955b8018b1f7e"
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs_service/SecurityGroup/Resource"
+      }
+    },
+    "ecsalbAC0F0849": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false"
+          }
+        ],
+        "Name": "ecs-alb",
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "secgroupecsalb44D0D5CE",
+              "GroupId"
+            ]
+          }
+        ],
+        "Subnets": [
+          "subnet-02c5439e21756dec8",
+          "subnet-087dfca4c91e552cc",
+          "subnet-0c9d41a78d9df99f2"
+        ],
+        "Type": "application"
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs-alb/Resource"
+      }
+    },
+    "ecsalblistener4CC04513": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "ecshttptg8FA2DA59"
+            },
+            "Type": "forward"
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "ecsalbAC0F0849"
+        },
+        "Port": 80,
+        "Protocol": "HTTP"
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs-alb/listener/Resource"
+      }
+    },
+    "ecshttptg8FA2DA59": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "TargetGroupAttributes": [
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false"
+          }
+        ],
+        "VpcId": "vpc-090b955b8018b1f7e"
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/ecs_http_tg/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/11QS0/DMAz+LbungY3DuMIQXDh1uyPP9SavmVPl0QlV+e+kj6HAyfb3kD97o5/14wpuvsKmrQwf9bAPgK2qydvokFTmvgZCr4ediT6QU7uT3Nt3cGcIdADfvtGJhQNbGQX/ESsBWMgV2OLdk+s578mmpU2K4aqH2poJHWtShJscjTA6Dt8fzsZudhRAFhnwgdFYaI5gQJDl3GffS9cZRhjXfmbudeLmS/7MpY7zgbJo7n3BH3J6Cr9BijGlKfXyv6TENqQv/qFfb/WTXq8unrlyUQJfSddz/QGeN3QXhwEAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "MyEcsConstructStack/CDKMetadata/Default"
+      }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "version": "16.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "MyEcsConstructStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "MyEcsConstructStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "MyEcsConstructStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://808716551236/eu-west-1",
+      "properties": {
+        "templateFile": "MyEcsConstructStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::808716551236:role/cdk-hnb659fds-deploy-role-808716551236-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::808716551236:role/cdk-hnb659fds-cfn-exec-role-808716551236-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-808716551236-eu-west-1/f88bafcd9856a99940c8253dcb1816d1623a278d263241ec7aaf40e141c79bc5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "MyEcsConstructStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::808716551236:role/cdk-hnb659fds-lookup-role-808716551236-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "MyEcsConstructStack.assets"
+      ],
+      "metadata": {
+        "/MyEcsConstructStack/network-cluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "networkcluster3AF58702"
+          }
+        ],
+        "/MyEcsConstructStack/ecs-task-def/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecstaskdefTaskRole84101996"
+          }
+        ],
+        "/MyEcsConstructStack/ecs-task-def/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecstaskdefDBF1FC28"
+          }
+        ],
+        "/MyEcsConstructStack/secgroup_ecs_alb/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "secgroupecsalb44D0D5CE"
+          }
+        ],
+        "/MyEcsConstructStack/ecs_service/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsserviceServiceF21F8639"
+          }
+        ],
+        "/MyEcsConstructStack/ecs_service/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsserviceSecurityGroup926DCE35"
+          }
+        ],
+        "/MyEcsConstructStack/ecs-alb/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsalbAC0F0849"
+          }
+        ],
+        "/MyEcsConstructStack/ecs-alb/listener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsalblistener4CC04513"
+          }
+        ],
+        "/MyEcsConstructStack/ecs_http_tg": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "When creating an empty TargetGroup, you should specify a 'targetType' (this warning may become an error in the future).",
+            "trace": [
+              "Annotations.addMessage (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/annotations.ts:64:25)",
+              "Annotations.addWarning (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/annotations.ts:26:10)",
+              "ApplicationTargetGroup.validateTargetGroup (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/shared/base-target-group.ts:200:32)",
+              "ApplicationTargetGroup.validateTargetGroup (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-target-group.ts:243:23)",
+              "Object.validate (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/shared/base-target-group.ts:162:52)",
+              "Node.validate (/Users/davidbryant/aws/MyEcsConstruct/node_modules/constructs/src/construct.ts:232:24)",
+              "/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:205:42",
+              "visit (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:221:5)",
+              "visit (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:226:5)",
+              "visit (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:226:5)",
+              "validateTree (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:204:3)",
+              "Object.synthesize (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/private/synthesis.ts:36:5)",
+              "App.synth (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/stage.ts:90:23)",
+              "process.<anonymous> (/Users/davidbryant/aws/MyEcsConstruct/node_modules/aws-cdk-lib/core/lib/app.ts:64:45)",
+              "Object.onceWrapper (node:events:510:26)",
+              "process.emit (node:events:390:28)",
+              "process.emit (node:domain:475:12)",
+              "process.emit (/Users/davidbryant/aws/MyEcsConstruct/node_modules/source-map-support/source-map-support.js:516:21)"
+            ]
+          }
+        ],
+        "/MyEcsConstructStack/ecs_http_tg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecshttptg8FA2DA59"
+          }
+        ],
+        "/MyEcsConstructStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/MyEcsConstructStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/MyEcsConstructStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "MyEcsConstructStack"
+    }
+  }
+}

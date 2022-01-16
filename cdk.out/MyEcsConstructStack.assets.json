@@ -1,0 +1,20 @@
+{
+  "version": "16.0.0",
+  "files": {
+    "f88bafcd9856a99940c8253dcb1816d1623a278d263241ec7aaf40e141c79bc5": {
+      "source": {
+        "path": "MyEcsConstructStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "808716551236-eu-west-1": {
+          "bucketName": "cdk-hnb659fds-assets-808716551236-eu-west-1",
+          "objectKey": "f88bafcd9856a99940c8253dcb1816d1623a278d263241ec7aaf40e141c79bc5.json",
+          "region": "eu-west-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::808716551236:role/cdk-hnb659fds-file-publishing-role-808716551236-eu-west-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
